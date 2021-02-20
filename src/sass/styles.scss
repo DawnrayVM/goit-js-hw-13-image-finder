@@ -1,0 +1,125 @@
+:root {
+  --timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  --animation-duration: 250ms;
+}
+
+html {
+  box-sizing: border-box;
+  font-family: Roboto;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+}
+
+img {
+  display: block;
+}
+
+p {
+  padding: 0;
+  margin: 0;
+}
+
+input {
+  width: 600px;
+  font-family: Roboto;
+  font-size: 22px;
+  height: 45px;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+}
+
+.container {
+  width: 1280px;
+  padding: 50px 15px 20px 15px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  margin-right: auto;
+  margin-left: auto;
+  text-align: center;
+}
+
+.search-form {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.is-hidden {
+  display: none;
+}
+
+.gallery {
+  max-width: 1280px;
+  padding: 0;
+  margin: 0;
+  margin-top: 50px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.photo-card {
+  margin-right: 15px;
+  margin-bottom: 25px;
+  overflow: hidden;
+  // height: 280px;
+  flex-basis: calc((1225px - (15px * 3)) / 4);
+  box-shadow: 0px 1px 3px 0px rgba(0, 0, 0, 0.2),
+    0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 2px 1px -1px rgba(0, 0, 0, 0.12);
+  transition: transform var(--animation-duration) var(--timing-function);
+}
+
+.photo-card:nth-child(4n) {
+  margin-right: 0;
+}
+.photo-card:hover {
+  transform: scale(1.03);
+}
+
+.stats {
+  display: flex;
+  justify-content: space-between;
+  max-width: 295px;
+  padding: 20px 10px;
+  font-size: 12px;
+}
+
+.stats-item {
+  display: flex;
+  align-items: center;
+}
+
+.img-container {
+  max-width: 295px;
+  max-height: 180px;
+  overflow: hidden;
+}
+
+.btn {
+  border: none;
+  margin-left: 10px;
+  background: #404040;
+  color: #ffffff;
+  font-weight: 100;
+  padding: 15px;
+  text-transform: uppercase;
+  border-radius: 6px;
+  // display: inline-block;
+  transition: all 0.3s ease 0s;
+}
+
+.btn:hover {
+  color: #404040;
+  font-weight: 100;
+  letter-spacing: 3px;
+  background: none;
+  box-shadow: 0px 5px 40px -10px rgba(0, 0, 0, 0.57);
+  transition: all 0.3s ease 0s;
+}

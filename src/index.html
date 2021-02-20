@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Image finder</title>
+  </head>
+
+  <body>
+    <div class="container">
+      <form class="search-form" id="search-form">
+        <input
+          type="text"
+          name="query"
+          autocomplete="off"
+          placeholder="Search images..."
+        />
+        <button type="submit" data-action="submit" class="btn">Search</button>
+        <button type="reset" data-action="clear" class="btn">Clear</button>
+      </form>
+      <ul class="gallery"></ul>
+      <button
+        type="button"
+        data-action="load-more"
+        class="btn js-btn-load-more is-hidden"
+      >
+        Load more...
+      </button>
+    </div>
+  </body>
+</html>
