@@ -5,7 +5,7 @@ export const api = {
   url: 'https://pixabay.com/api/',
   imageType: 'image_type=photo',
   imageOrientation: 'orientation=horizontal',
-  page: 0,
+  page: 1,
   perPage: 'per_page=12',
   key: 'key=20341451-3d1090cbc297b1fd4b3b8fcd1',
 };

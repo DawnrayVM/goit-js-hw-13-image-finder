@@ -3,13 +3,14 @@ import '@pnotify/core/dist/PNotify.css';
 import '@pnotify/core/dist/Material.css';
 import 'material-design-icons/iconfont/material-icons.css';
 require('typeface-roboto');
-import { notice, error, success } from '@pnotify/core/dist/PNotify.js';
+require('basiclightbox/dist/basicLightbox.min.css');
+import { error, success } from '@pnotify/core/dist/PNotify.js';
 const { defaults } = require('@pnotify/core');
 defaults.styling = 'material';
 defaults.icons = 'material';
 defaults.mode = 'light';
 defaults.delay = '1500';
-const debounce = require('lodash.debounce');
+import * as basicLightbox from 'basiclightbox';
 import * as apiService from './js/apiService.js';
 import imageCard from '../src/templates/image-card.hbs';
 
@@ -17,67 +18,69 @@ const refs = {
   searchForm: document.querySelector('.search-form'),
   gallery: document.querySelector('.gallery'),
   btnLoadMore: document.querySelector('.js-btn-load-more'),
+  userQuery: document.querySelector('[name="query"]'),
 };
 
 function scrollToEnd() {
-  const scrollHeight = Math.max(
-    document.body.scrollHeight,
-    document.documentElement.scrollHeight,
-    document.body.offsetHeight,
-    document.documentElement.offsetHeight,
-    document.body.clientHeight,
-    document.documentElement.clientHeight,
-  );
   setTimeout(() => {
     window.scrollTo({
-      top: scrollHeight,
+      top: document.documentElement.offsetHeight - 900,
       behavior: 'smooth',
     });
-  }, 350);
+  }, 300);
+}
+
+function renderMarkup({ hits, totalHits }) {
+  if (totalHits === 0 || refs.userQuery.value === '') {
+    return error({
+      title: 'Oops...',
+      text: `Can\'t find images with such tag`,
+    });
+  }
+  success({
+    text: 'Matches found!',
+  });
+  const markup = imageCard(hits);
+  refs.gallery.insertAdjacentHTML('beforeend', markup);
+  refs.btnLoadMore.classList.remove('is-hidden');
 }
 
 function resetSearch() {
-  userQuery.value = '';
+  refs.userQuery.value = '';
   refs.btnLoadMore.classList.add('is-hidden');
   refs.gallery.innerHTML = '';
   apiService.api.page = 1;
 }
-function loadMore(userQuery) {
+
+function renderMore() {
   apiService.api.page += 1;
-  apiService.fetchImages(userQuery, apiService.api.page).then(({ hits }) => {
-    success({
-      text: 'Matches found!',
-    });
-    const markUp = imageCard(hits);
-    refs.gallery.insertAdjacentHTML('beforeend', markUp);
-  });
-  scrollToEnd();
-}
-const userQuery = document.querySelector('[name="query"]');
-
-refs.searchForm.addEventListener('submit', event => {
-  event.preventDefault();
   apiService
-    .fetchImages(userQuery.value, (apiService.api.page += 1))
-    .then(({ hits, totalHits }) => {
-      if (totalHits === 0 || userQuery.value === '') {
-        return error({
-          title: 'Oops...',
-          text: `Can\'t find images with such tag`,
-        });
-      }
-      success({
-        text: 'Matches found!',
-      });
-      const markUp = imageCard(hits);
-      refs.gallery.insertAdjacentHTML('beforeend', markUp);
-      refs.btnLoadMore.classList.remove('is-hidden');
+    .fetchImages(refs.userQuery.value, apiService.api.page)
+    .then(({ hits }) => {
+      const markup = imageCard(hits);
+      refs.gallery.insertAdjacentHTML('beforeend', markup);
+      scrollToEnd();
     });
-  scrollToEnd();
-});
+}
 
-refs.btnLoadMore.addEventListener('click', e => {
-  loadMore(userQuery.value);
+function modalHandler() {
+  const instance = basicLightbox.create(`
+    <div class="modal">
+    <img src="${event.target.dataset.source}">
+    </div>
+`);
+  instance.show();
+}
+
+refs.searchForm.addEventListener('submit', e => {
+  e.preventDefault();
+  refs.gallery.innerHTML = '';
+  apiService.api.page = 1;
+  refs.btnLoadMore.classList.add('is-hidden');
+  apiService
+    .fetchImages(refs.userQuery.value)
+    .then(renderMarkup)
+    .catch(console.log);
 });
 
 refs.searchForm.addEventListener('click', e => {
@@ -85,3 +88,7 @@ refs.searchForm.addEventListener('click', e => {
     resetSearch();
   }
 });
+
+refs.btnLoadMore.addEventListener('click', renderMore);
+
+refs.gallery.addEventListener('click', modalHandler);
